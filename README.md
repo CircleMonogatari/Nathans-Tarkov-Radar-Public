@@ -1,63 +1,27 @@
-# Looking Glass
+# Tarkov ESP
 
-An extremely low latency KVMFR (KVM FrameRelay) implementation for guests with
-VGA PCI Passthrough.
+I have incldued a small example of how you could use looking-glass to render ESP on a virtual-machine host.
 
-* Project Website: https://looking-glass.hostfission.com
+## How to use
+- Build the project in /client/
+- Read the guide for setting up your virtual machine to support [Looking Glass](https://github.com/gnif/LookingGlass) (my project only includes the modified client, you still need the drivers and software on the guest.)
+- Run `./looking-glass-client -s -k -g EGLTarkov` as root once tarkov is open, you can run without `-g EGLTarkov` to run the normal renderer.
 
-## Donations
+You will probably need to use something like Synergy for m/k input because spice is rubbish. `-s` disables it.
 
-I (Geoffrey McRae) am the primary developer behind this project and I have
-invested thousands of hours of development time into it.
+![Picture](https://i.imgur.com/bKtYsOd.png)
 
-If you like this project and find it useful and would like to help out you can
-support me directly using the following platforms.
+## Issues & Improvements
+The code is far from perfect and I have only included a really simple example, there are a couple of issues that I have indentified that really should be worked on;
 
-* [GitHub](https://github.com/sponsors/gnif)
-* [Ko-Fi](https://ko-fi.com/lookingglass)
-* [Patreon](https://www.patreon.com/gnif)
-* [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ESQ72XUPGKXRY)
-* BTC - 14ZFcYjsKPiVreHqcaekvHGL846u3ZuT13
+### Issues/Flaws/Improvements
+* FPS Camera sometimes can't be found in tagged-objects and has to be cached, you must open looking glass before joining a match.
+* You will get bad framerate until you enter a game because I am bad and am itterating tagged/active objects every frame until GameWorld is found. You can run without `-g EGLTarkov` until you are ready to join a game.
+* Heavy memory reading on the main thread causes timer-drifts and less than desireable framerate (although this could be an issue with my PC) - it would probably be best to try and run the loot table reading function on a seperate thread and only update it every now and then as to avoid reading 100's of entries every frame.
+* Move the w2s function into the glsl shader in an attempt to try and improve performance, having it there will probably make it easier to draw pretty things anyway.
+* The overlay and game are not in perfect sync, although not terrible it could definetely be improved.
+* And probably a bunch of other things.
 
-## Documentation
+## Third Party
 
-** IMPORTANT **
-This project contains submodules that must be checked out if building from the
-git repository!
-
-Please also be sure to see the following files for more information
-
-* [client/README.md](client/README.md)
-* [c-host/README.md](c-host/README.md)
-* [module/README.md](module/README.md)
-
-## Obtaining and using Looking Glass
-
-Please see https://looking-glass.hostfission.com/quickstart
-
-## Latest Version
-
-If you would like to use the latest bleeding edge version of Looking Glass please
-be aware there will be no support at this time.
-
-Latest bleeding edge builds of the Windows host application can be obtained from:
-
-https://looking-glass.hostfission.com/downloads
-
-# Help and support
-
-## Web
-
-https://forum.level1techs.com/t/looking-glass-triage/130952
-
-## Discord
-
-https://discord.gg/4ahCn4c
-
-## IRC
-
-Join us in the #LookingGlass channel on the FreeNode network
-
-## Trello
-
-* https://trello.com/b/tI1Xbwsg/looking-glass
+This project is a modification of [Looking Glass](https://github.com/gnif/LookingGlass) and uses [VMRead](https://github.com/Heep042/vmread) to read virtual machine memory.
