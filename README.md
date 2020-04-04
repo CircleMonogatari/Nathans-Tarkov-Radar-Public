@@ -1,39 +1,63 @@
-# Nathans-Tarkov-Radar
-A collection of applications that make up my Tarkov radar.
+# Looking Glass
 
-## Features
-- Memory Reading Client (DMA, /Source/)
-- Relay Server (/wwwCheats/TarkovRadarProcessor/)
-- Interface Client (/wwwCheats/www/)
+An extremely low latency KVMFR (KVM FrameRelay) implementation for guests with
+VGA PCI Passthrough.
 
-## Model
-#### Client
-The client handles all the logic for reading the data from the game thanks to VMRead.
-(https://github.com/Heep042/vmread)
+* Project Website: https://looking-glass.hostfission.com
 
-#### Relay Server
-The relay server takes the input from the program running on the host machine and relays it to other authenticated clients.
+## Donations
 
-It is compatible with any program that can interface with it, meaning you can design **your own rendering implementation** to display the results in an overlay.
+I (Geoffrey McRae) am the primary developer behind this project and I have
+invested thousands of hours of development time into it.
 
-#### Interface Client
-The interface client is based in JavaScript and displays information in a top-down radar fashion.
-The idea was to host this on a web-server allowing friends to easily view it if they wanted.
+If you like this project and find it useful and would like to help out you can
+support me directly using the following platforms.
 
-**Works only with Chrome or Firefox with special features enabled, see: [OffscreenCanvas Compatibility](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#Browser_compatibility)**
+* [GitHub](https://github.com/sponsors/gnif)
+* [Ko-Fi](https://ko-fi.com/lookingglass)
+* [Patreon](https://www.patreon.com/gnif)
+* [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ESQ72XUPGKXRY)
+* BTC - 14ZFcYjsKPiVreHqcaekvHGL846u3ZuT13
 
-It is quite primitive and runs rather poorly however it is an example of how you could integrate your own solution.
+## Documentation
 
-![Radar Image](https://i.imgur.com/mnl79g1.png)
+** IMPORTANT **
+This project contains submodules that must be checked out if building from the
+git repository!
 
-## Notice
-I really wouldn't use this for production or expose the web socket server over the internet. I attempted to implement a rubbish authentication method that works if your goal is to share it between friends.
-However, keep in mind the host does not have authentication and is insecure.
+Please also be sure to see the following files for more information
 
-#### VMRead
-Thanks to Heep042 for maintaining VMRead, without it this program would not exist.
+* [client/README.md](client/README.md)
+* [c-host/README.md](c-host/README.md)
+* [module/README.md](module/README.md)
 
-Extra Notice:
-If you are trying to compile/inject the client internally it will likely hang due to my usage of sleep so, please use external only.
+## Obtaining and using Looking Glass
 
-For examples on how to setup the environment please check out the VMRead thread on unknown cheats.
+Please see https://looking-glass.hostfission.com/quickstart
+
+## Latest Version
+
+If you would like to use the latest bleeding edge version of Looking Glass please
+be aware there will be no support at this time.
+
+Latest bleeding edge builds of the Windows host application can be obtained from:
+
+https://looking-glass.hostfission.com/downloads
+
+# Help and support
+
+## Web
+
+https://forum.level1techs.com/t/looking-glass-triage/130952
+
+## Discord
+
+https://discord.gg/4ahCn4c
+
+## IRC
+
+Join us in the #LookingGlass channel on the FreeNode network
+
+## Trello
+
+* https://trello.com/b/tI1Xbwsg/looking-glass
