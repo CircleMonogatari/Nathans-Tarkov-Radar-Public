@@ -6,22 +6,11 @@ class TarkovLootItem
 public:
     WinProcess *GameProcess;
     uint64_t Address;
-    std::size_t Signature;
 
-    TarkovLootItem(WinProcess *GameProc, uint64_t Addr, int32_t ID)
+    TarkovLootItem(WinProcess *GameProc, uint64_t Addr)
     {
         GameProcess = GameProc;
         Address = Addr;
-
-        char id[200];
-        snprintf(id, sizeof(id), "%f%f%f", GetLootLocation().x, GetLootLocation().y, GetLootLocation().z);
-        Signature = std::hash<std::string>{}(id);
-
-    }
-
-    bool operator==(const TarkovLootItem &other)
-    {
-        return other.Signature == Signature;
     }
 
     uint64_t GetBasicInfo()

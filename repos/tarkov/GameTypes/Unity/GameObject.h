@@ -18,7 +18,7 @@ public:
         std::string result;
         uint64_t GameObjectNameAddr = GameProcess->Read<uint64_t>(Address + 0x60);
 
-        for (int i = 0; i <= 100; i++)
+        for (int i = 0; i <= 50; i++)
         {
             char CurrentChar = GameProcess->Read<char>(GameObjectNameAddr + i);
 

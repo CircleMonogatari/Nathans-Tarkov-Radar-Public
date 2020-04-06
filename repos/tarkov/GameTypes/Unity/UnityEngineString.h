@@ -23,27 +23,9 @@ public:
         std::string result;
 
         int32_t StringSize = GetStringSize();
+        result.resize(StringSize);
 
-        for (int i = 0; i < StringSize; i++)
-        {
-            char CurrentChar = GameProcess->Read<char>(Address + 0x14 + (i * 2));
-            result.push_back(CurrentChar);
-        }
-
-        return result;
-    }
-
-    std::string GetStringSingle()
-    {
-        std::string result;
-
-        int32_t StringSize = GetStringSize();
-
-        for (int i = 0; i < StringSize; i++)
-        {
-            char CurrentChar = GameProcess->Read<char>(Address + 0x14 + (i));
-            result.push_back(CurrentChar);
-        }
+        GameProcess->Read(Address + 0x14, result.data(), StringSize * 2);
 
         return result;
     }

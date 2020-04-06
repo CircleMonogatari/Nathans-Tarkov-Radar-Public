@@ -1,8 +1,7 @@
 #pragma once
 #include "GameTypes/Unity/GameObjectManager.h"
-#include "GameTypes/Unity/GameWorld.h"
-#include "GameTypes/Unity/FPSCamera.h"
 #include "TarkovGameWorld.h"
+#include "TarkovFPSCamera.h"
 
 const struct Offsets
 {
@@ -30,7 +29,7 @@ class TarkovGame
 protected:
     GameObjectManager GOM{};
     TarkovGameWorld LGW{};
-    FPSCamera FPCamera{};
+    TarkovFPSCamera FPCamera{};
 
 private:
     WinContext *ProcessContext;
@@ -43,17 +42,16 @@ private:
 
     Matrix4f CameraMatrix;
     Vector3f CameraLocation;
-    std::vector<TarkovPlayer> PlayerList;
-    std::vector<TarkovLootItem> LootList;
-
-    int lcount;
+    std::vector<uint64_t> PlayerList;
+    std::vector<uint64_t> LootList;
 
 public:
     inline GameStatus GetGameStatus() { return Status; };
     inline Matrix4f GetCameraMatrix() { return CameraMatrix; };
     inline Vector3f GetCameraLocation() { return CameraLocation; };
-    inline std::vector<TarkovPlayer> GetPlayerList() { return PlayerList; };
-    inline std::vector<TarkovLootItem> GetLootList() { return LootList; };
+    inline std::vector<uint64_t> GetPlayerList() { return PlayerList; };
+    inline std::vector<uint64_t> GetLootList() { return LootList; };
+    inline WinProcess * GetWinProc() { return GameProcess; }; // remove
 
     TarkovGame(WinContext *ctx, WinProcess *InProcess, uint64_t InModuleBase)
     {
@@ -63,7 +61,7 @@ public:
 
         GOM = GameObjectManager(GameProcess, GameProcess->Read<uint64_t>(ModuleBase + Offsets.GameObjectManager));
         LGW = GOM.FindGameObjectActive<TarkovGameWorld>("GameWorld");
-        FPCamera = GOM.FindGameObjectTagged<FPSCamera>("FPS Camera");
+        FPCamera = GOM.FindGameObjectTagged<TarkovFPSCamera>("FPS Camera");
 
         Status = GameStatus();
 
@@ -90,25 +88,17 @@ public:
                 LGW = GOM.FindGameObjectActive<TarkovGameWorld>("GameWorld");
 
             if (!FPCamera.IsValid)
-                FPCamera = GOM.FindGameObjectTagged<FPSCamera>("FPS Camera");
+                FPCamera = GOM.FindGameObjectTagged<TarkovFPSCamera>("FPS Camera");
         }
 
         if (!Status.IsGameActive() || !Status.IsGamePlaying())
             return true;
 
-        uint64_t CameraA = GameProcess->Read<uint64_t>(FPCamera.Address + 0x18);
-        CameraMatrix = GameProcess->Read<Matrix4f>(CameraA + 0xD8);
-
-        uint64_t CameraB = ReadPtrChain(GameProcess, FPCamera.Address, {0x8, 0x38});
-        CameraLocation = GameProcess->Read<Vector3f>(CameraB + 0xB0);
+        CameraMatrix = FPCamera.GetCameraMatrix();
+        CameraLocation = FPCamera.GetCameraCoordinates();
 
         PlayerList = LGW.GetAllPlayers(true);
-
-        if (++lcount > 100)
-        {
-            LootList = LGW.GetAllLoot();
-            lcount = 0;
-        }
+        LootList = LGW.GetAllLoot();
 
         return true;
     }
