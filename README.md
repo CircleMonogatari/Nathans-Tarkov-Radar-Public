@@ -17,8 +17,6 @@ The code is far from perfect and I have only included a really simple example, t
 ### Issues/Flaws/Improvements
 * FPS Camera sometimes can't be found in tagged-objects and has to be cached, you must open looking glass before joining a match.
 * You will get bad framerate until you enter a game because I am bad and am iterating tagged/active objects every frame until GameWorld is found. You can run without `-g EGLTarkov` until you are ready to join a game.
-* Heavy memory reading on the main thread causes timer-drifts and less than desirable framerate (although this could be an issue with my PC) - it would probably be best to try and run the loot table reading function on a separate thread and only update it every now and then as to avoid reading 100's of entries every frame.
-* Move the w2s function into the glsl shader in an attempt to try and improve performance, having it there will probably make it easier to draw pretty things anyway.
 * The overlay and game are not in perfect sync, although not terrible it could definitely be improved.
 * And probably a bunch of other things.
 
