@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(renderer_EGLTarkov LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 
 find_package(PkgConfig)
 pkg_check_modules(RENDERER_EGL_PKGCONFIG REQUIRED

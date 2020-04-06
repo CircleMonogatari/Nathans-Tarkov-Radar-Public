@@ -120,7 +120,7 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
 {
     Matrix4f CameraMatrix = Tarkov->GetCameraMatrix();
     Vector3f CameraPosition = Tarkov->GetCameraLocation();
-    std::vector<TarkovPlayer> Players = Tarkov->GetPlayerList();
+    std::vector<uint64_t> Players = Tarkov->GetPlayerList();
 
     clearArray(a);
 
@@ -128,8 +128,10 @@ void GetTarkovPlayers(TarkovGame *Tarkov, TarkovESPArray *a, float width, float 
     WorldToScreen(CameraMatrix, CameraPosition, *LocalScreenPos, width, height);
     Vector3f meme;
 
-    for (TarkovPlayer Player : Players)
+    for (uint64_t PlayerPtr : Players)
     {
+        TarkovPlayer Player = TarkovPlayer(Tarkov->GetWinProc(), PlayerPtr);
+
         Vector2f *ScreenPos = new Vector2f;
         Vector3f Offset = Vector3f(0, 1, 0);
         Vector3f PlayerPosition = Player.GetPlayerBody().GetSkeletonRoot().GetLocationMatrixTest();
@@ -155,17 +157,18 @@ void GetTarkovLoot(TarkovGame *Tarkov, TarkovESPArray *a, float width, float hei
 {
     Matrix4f CameraMatrix = Tarkov->GetCameraMatrix();
     Vector3f CameraPosition = Tarkov->GetCameraLocation();
-    std::vector<TarkovLootItem> Items = Tarkov->GetLootList();
+    std::vector<uint64_t> Items = Tarkov->GetLootList();
 
     clearArray(a);
 
     Vector2f *LocalScreenPos = new Vector2f;
     WorldToScreen(CameraMatrix, CameraPosition, *LocalScreenPos, width, height);
 
-    for (TarkovLootItem Item : Items)
+    for (uint64_t ItemPtr : Items)
     {
-        if (!Item.IsHighValue())
-            continue;
+        TarkovLootItem Item = TarkovLootItem(Tarkov->GetWinProc(), ItemPtr);
+        //if (!Item.IsHighValue())
+         //   continue;
 
         Vector2f *ScreenPos = new Vector2f;
         Vector3f LootLocation = Item.GetLootLocation();
