@@ -11,6 +11,7 @@
 #define TOSTRING(x) STRINGIFY(x)
 
 FILE* dfile;
+extern int vtTLBHits, vtTLBMisses;
 
 static unsigned long readbench(const WinProcess& process, size_t start, size_t end, size_t chunkSize, size_t chunkCount, size_t totalSize, size_t *readCount, size_t *totalRead)
 {
@@ -48,7 +49,7 @@ static unsigned long readbench(const WinProcess& process, size_t start, size_t e
 	auto beginTime = std::chrono::high_resolution_clock::now();
 
 	while(read < totalSize) {
-		size_t addr = distr(eng);
+		addr = distr(eng);
 		for (size_t i = 0; i < chunkCount; i++) {
 			size_t addrp = distrp(eng);
 			info[i].local = (uint64_t)buf[i];
@@ -111,13 +112,8 @@ __attribute__((constructor))
 static void init()
 {
 	FILE* out = stdout;
-	pid_t pid;
-#if (LMODE() == MODE_EXTERNAL())
-	FILE* pipe = popen("pidof qemu-system-x86_64", "r");
-	fscanf(pipe, "%d", &pid);
-	pclose(pipe);
-#else
-	out = fopen("/tmp/testr.txt", "w");
+	pid_t pid = 0;
+#if (LMODE() != MODE_EXTERNAL())
 	pid = getpid();
 #endif
 	fprintf(out, "Using Mode: %s\n", TOSTRING(LMODE));
@@ -158,20 +154,20 @@ static void init()
 				if (!strcasecmp(i.info.name, "win32kbase.sys"))
 					fprintf(out, "%s kmod export count: %zu\n", i.info.name, i.exports.getSize());
 
-		WinProcess* steam = ctx.processList.FindProc("steam.exe");
+		WinProcess* steam = ctx.processList.FindProc("Steam.exe");
 
 		if (steam) {
 			WinDll* mod = steam->modules.GetModuleInfo("friendsui.DLL");
 			if (mod) {
 				fprintf(out, "Performing memory benchmark...\n");
+				SetMemCacheTime(1000);
 				runfullbench(out, *steam, mod->info.baseAddress, mod->info.baseAddress + mod->info.sizeOfModule);
+				SetMemCacheTime(GetDefaultMemCacheTime());
 			}
 		}
-
 	} catch (VMException& e) {
 		fprintf(out, "Initialization error: %d\n", e.value);
 	}
-
 
 	fclose(out);
 }
